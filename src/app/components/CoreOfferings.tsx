@@ -1,4 +1,18 @@
+'use client';
+
+import { motion, useScroll, useTransform } from 'framer-motion';
+import { useRef } from 'react';
+
 const CoreOfferings = () => {
+  const ref = useRef(null);
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ["start end", "end start"]
+  });
+
+  const y = useTransform(scrollYProgress, [0, 1], ["0%", "50%"]);
+  const opacity = useTransform(scrollYProgress, [0, 0.5, 1], [0.3, 0.8, 0.3]);
+
   const offerings = [
     {
       title: "Enterprise Solution",
@@ -43,17 +57,43 @@ const CoreOfferings = () => {
   ];
 
   return (
-    <section className="py-20 bg-gray-50">
-      <div className="container mx-auto px-4">
-        <h2 className="text-4xl font-bold text-blue-600 mb-4">Our Core Offerings</h2>
-        <p className="text-xl text-gray-600 mb-12">New Age Tech Delivered with Precision</p>
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+    <section ref={ref} className="py-20 bg-gray-50 relative overflow-hidden">
+      <motion.div 
+        className="absolute inset-0 z-0"
+        style={{ 
+          y,
+          opacity,
+          backgroundImage: "url('https://images.pexels.com/photos/1181244/pexels-photo-1181244.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1')",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          filter: "brightness(0.85)"
+        }}
+      />
+      <div className="container mx-auto px-4 relative z-10">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8 }}
+          className="bg-black/30 p-6 rounded-lg inline-block"
+        >
+          <h2 className="text-4xl font-bold text-white mb-4">Our Core Offerings</h2>
+          <p className="text-xl text-white/90">New Age Tech Delivered with Precision</p>
+        </motion.div>
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 mt-12">
           {offerings.map((offering, index) => (
-            <div key={index} className="bg-white rounded-lg p-6 shadow-lg hover:shadow-xl transition-shadow">
+            <motion.div
+              key={index}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: index * 0.1 }}
+              className="bg-white/90 rounded-lg p-6 shadow-lg hover:shadow-xl transition-all transform hover:scale-105"
+            >
               <div className="text-4xl mb-4">{offering.icon}</div>
               <h3 className="text-xl font-bold mb-3 text-blue-600">{offering.title}</h3>
               <p className="text-gray-600">{offering.description}</p>
-            </div>
+            </motion.div>
           ))}
         </div>
       </div>
